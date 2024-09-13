@@ -1,0 +1,42 @@
+name: kuroline
+
+services:
+  eureka-server:
+    image: kuro08/kuroline-eureka-server
+    ports:
+      - 8761:8761
+    networks:
+      - kuroline-network
+    environment:
+      - EUREKA_INSTANCE_HOSTNAME=eureka-server
+
+  api-gateway:
+    image: kuro08/kuroline-api-gateway
+    ports:
+      - 8090:8090
+    networks:
+      - kuroline-network
+    depends_on:
+      - eureka-server
+
+  users-ms:
+    image: kuro08/kuroline-users-ms
+    ports:
+      - 8091:8091
+    networks:
+      - kuroline-network
+    depends_on:
+      - api-gateway
+
+  chat-ms: 
+    image: kuro08/kuroline-chat-ms
+    ports:
+      - 8092:8092
+    networks:
+      - kuroline-network
+    depends_on:
+      - api-gateway
+
+networks:
+  kuroline-network:
+    driver: bridge
